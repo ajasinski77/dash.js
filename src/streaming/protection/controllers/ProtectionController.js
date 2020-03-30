@@ -681,7 +681,12 @@ function ProtectionController(config) {
             xhr.timeout = timeout;
         }
         for (const key in headers) {
-            xhr.setRequestHeader(key, headers[key]);
+			if(typeof headers[key] === 'function') {
+				const callbackHeaders = headers[key]();
+				for(const name in callbackHeaders) xhr.setRequestHeader(name, callbackHeaders[name]);
+			} else {
+				xhr.setRequestHeader(key, headers[key]);
+			}
         }
 
         const retryRequest = function () {
