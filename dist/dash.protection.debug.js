@@ -1586,7 +1586,14 @@ function ProtectionController(config) {
             xhr.timeout = timeout;
         }
         for (var key in headers) {
-            xhr.setRequestHeader(key, headers[key]);
+            if (typeof headers[key] === 'function') {
+                var callbackHeaders = headers[key]();
+                for (var _name in callbackHeaders) {
+                    xhr.setRequestHeader(_name, callbackHeaders[_name]);
+                }
+            } else {
+                xhr.setRequestHeader(key, headers[key]);
+            }
         }
 
         var retryRequest = function retryRequest() {
